@@ -1,0 +1,11 @@
+id,title,author,subject,year
+101,Introduction to Algorithms,Cormen,Algorithms,2022
+102,Operating System Concepts,Silberschatz,Operating Systems,2021
+103,Computer Networks,Tanenbaum,Networks,2020
+104,Database System Concepts,Korth,Database,2021
+105,Artificial Intelligence,Russell,AI,2022
+106,Data Structures Using C,Thareja,Programming,2020
+107,Machine Learning,Mitchell,Artificial Intelligence,2019
+108,Computer Organization,Hamacher,Computer Architecture,2018
+109,Database Management Systems,Ramakrishnan,Database,2020
+110,Design and Analysis of Algorithms,Levitin,Algorithms,2021
