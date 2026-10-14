@@ -7,6 +7,39 @@ typedef struct
     char subject[50];
     int year;
 } Document;
+int loadDocuments(const char *filename, Document books[], int maxBooks)
+{
+    FILE *file;
+    char line[500];
+    int count = 0;
+
+    file = fopen(filename, "r");
+
+    if (file == NULL)
+    {
+        printf("Error: Could not open %s\n", filename);
+        return 0;
+    }
+
+
+    fgets(line, sizeof(line), file);
+
+    while (fgets(line, sizeof(line), file) != NULL && count < maxBooks)
+    {
+        sscanf(line, "%d,%99[^,],%99[^,],%49[^,],%d",
+               &books[count].id,
+               books[count].title,
+               books[count].author,
+               books[count].subject,
+               &books[count].year);
+
+        count++;
+    }
+
+    fclose(file);
+
+    return count;
+}
 void displayDocuments(Document books[], int n)
 {
     printf("\n%-5s %-30s %-20s %-20s %-6s\n",
@@ -24,20 +57,20 @@ void displayDocuments(Document books[], int n)
                books[i].year);
     }
 }
-int main()
-{
-    Document books[5] = {
-    {101, "Introduction to Algorithms", "Cormen", "Algorithms", 2022},
-    {102, "Operating System Concepts", "Silberschatz", "Operating Systems", 2021},
-    {103, "Computer Networks", "Tanenbaum", "Networks", 2020},
-    {104, "Database System Concepts", "Korth", "Database", 2021},
-    {105, "Artificial Intelligence", "Russell", "AI", 2022}
-};
+int main() {
+
+    Document books[1000];
+    int count;
+    
+
     printf("========================================\n");
     printf("   DIGITAL LIBRARY SEARCH ENGINE\n");
     printf("========================================\n");
 
-    displayDocuments(books, 5);
+    count = loadDocuments("documents.csv", books, 1000);
+    printf("\n%d documents loaded successfully.\n", count);
+
+    displayDocuments(books, count);
 
     return 0;
 }
