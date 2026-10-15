@@ -135,6 +135,135 @@ void mergeSort(Document books[], int left, int right)
         merge(books, left, mid, right);
     }
 }
+void swapDocuments(Document *a, Document *b)
+{
+    Document temp = *a;
+    *a = *b;
+    *b = temp;
+}
+int partition(Document books[], int low, int high)
+{
+    int pivot = books[high].id;
+    int i = low - 1;
+
+    for (int j = low; j < high; j++)
+    {
+        if (books[j].id < pivot)
+        {
+            i++;
+            swapDocuments(&books[i], &books[j]);
+        }
+    }
+
+    swapDocuments(&books[i + 1], &books[high]);
+
+    return i + 1;
+}
+void quickSort(Document books[], int low, int high)
+{
+    if (low < high)
+    {
+        int pivotIndex = partition(books, low, high);
+
+        quickSort(books, low, pivotIndex - 1);
+        quickSort(books, pivotIndex + 1, high);
+    }
+}
+int iterativeBinarySearch(Document books[], int n, int searchId)
+{
+    int low = 0;
+    int high = n - 1;
+
+    while (low <= high)
+    {
+        int mid = low + (high - low) / 2;
+
+        if (books[mid].id == searchId)
+        {
+            return mid;
+        }
+        else if (books[mid].id < searchId)
+        {
+            low = mid + 1;
+        }
+        else
+        {
+            high = mid - 1;
+        }
+    }
+
+    return -1;
+}
+int recursiveBinarySearch(Document books[], int low, int high, int searchId)
+{
+    if (low > high)
+    {
+        return -1;
+    }
+
+    int mid = low + (high - low) / 2;
+
+    if (books[mid].id == searchId)
+    {
+        return mid;
+    }
+    else if (books[mid].id < searchId)
+    {
+        return recursiveBinarySearch(books, mid + 1, high, searchId);
+    }
+    else
+    {
+        return recursiveBinarySearch(books, low, mid - 1, searchId);
+    }
+}
+int naivePatternMatch(char text[], char pattern[])
+{
+    int i, j;
+
+    for (i = 0; text[i] != '\0'; i++)
+    {
+        for (j = 0; pattern[j] != '\0'; j++)
+        {
+            if (text[i + j] != pattern[j])
+            {
+                break;
+            }
+        }
+
+        if (pattern[j] == '\0')
+        {
+            return 1;
+        }
+    }
+
+    return 0;
+}
+void searchByTitle(Document books[], int n, char pattern[])
+{
+    int found = 0;
+
+    printf("\nSearch Results:\n");
+    printf("-----------------------------\n");
+
+    for (int i = 0; i < n; i++)
+    {
+        if (naivePatternMatch(books[i].title, pattern))
+        {
+            printf("\nID      : %d\n", books[i].id);
+            printf("Title   : %s\n", books[i].title);
+            printf("Author  : %s\n", books[i].author);
+            printf("Subject : %s\n", books[i].subject);
+            printf("Year    : %d\n", books[i].year);
+
+            found = 1;
+        }
+    }
+
+    if (found == 0)
+    {
+        printf("\nNo matching documents found.\n");
+    }
+}
 int main()
 {
     Document books[1000];
@@ -173,13 +302,50 @@ int main()
 
             case 2:
             {
+                int searchChoice;
                 int searchId;
                 int index;
 
-                printf("\nEnter Document ID to search: ");
+                printf("\n------ SEARCH DOCUMENT BY ID ------\n");
+                printf("1. Linear Search\n");
+                printf("2. Iterative Binary Search\n");
+                printf("3. Recursive Binary Search\n");
+                printf("0. Back\n");
+
+                printf("\nEnter search method: ");
+                scanf("%d", &searchChoice);
+
+                if (searchChoice == 0)
+                {
+                 break;
+                }
+
+                printf("Enter Document ID to search: ");
                 scanf("%d", &searchId);
 
-                index = linearSearch(books, count, searchId);
+                if (searchChoice == 1)
+                {
+                 index = linearSearch(books, count, searchId);
+                }
+                else if (searchChoice == 2)
+                {
+                mergeSort(books, 0, count - 1);
+
+                index = iterativeBinarySearch(books, count, searchId);
+                }
+                else if (searchChoice == 3)
+                {
+                mergeSort(books, 0, count - 1);
+
+                index = recursiveBinarySearch(
+                books, 0, count - 1, searchId
+                );
+                }
+                else
+                {
+                  printf("\nInvalid search choice.\n");
+                  break;
+                }
 
                 if (index != -1)
                 {
@@ -192,25 +358,64 @@ int main()
                    printf("Year    : %d\n", books[index].year);
                 }
                 else
-                {  
-                   printf("\nDocument not found.\n");
+                {
+                    printf("\nDocument not found.\n");
                 }
 
-                 break;
+                break;
                 }
 
             case 3:
-                mergeSort(books, 0, count - 1);
+                {
+                 int sortChoice;
 
-                printf("\nDocuments sorted successfully using Merge Sort.\n");
+                 printf("\n------ SORT DOCUMENTS ------\n");
+                 printf("1. Merge Sort\n");
+                 printf("2. Quick Sort\n");
+                 printf("0. Back\n");
 
-                displayDocuments(books, count);
+                 printf("\nEnter sorting method: ");
+                 scanf("%d", &sortChoice);
+
+                 if (sortChoice == 1)
+                 {
+                   mergeSort(books, 0, count - 1);
+
+                   printf("\nDocuments sorted using Merge Sort.\n");
+                   displayDocuments(books, count);
+                 }
+                 else if (sortChoice == 2)
+                 {
+                   quickSort(books, 0, count - 1);
+
+                   printf("\nDocuments sorted using Quick Sort.\n");
+                   displayDocuments(books, count);
+                 }
+                 else if (sortChoice == 0)
+                 {
+                   printf("\nReturning to main menu.\n");
+                 }
+                 else
+                 {
+                   printf("\nInvalid sorting choice.\n");
+                 }
 
                 break;
+                 }
 
             case 4:
-                printf("\nText searching will be added later.\n");
+            {
+                char pattern[100];
+
+                printf("\n------ SEARCH BY TITLE ------\n");
+
+                printf("Enter word or phrase: ");
+                scanf(" %99[^\n]", pattern);
+
+                searchByTitle(books, count, pattern);
+
                 break;
+            }
 
             case 5:
                 printf("\nAlgorithm demonstrations will be added later.\n");
