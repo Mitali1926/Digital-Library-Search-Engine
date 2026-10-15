@@ -25,16 +25,16 @@ int loadDocuments(const char *filename, Document books[], int maxBooks)
     fgets(line, sizeof(line), file);
 
     while (fgets(line, sizeof(line), file) != NULL && count < maxBooks)
-    {
-        sscanf(line, "%d,%99[^,],%99[^,],%49[^,],%d",
-               &books[count].id,
-               books[count].title,
-               books[count].author,
-               books[count].subject,
-               &books[count].year);
+{
+    sscanf(line, "%d,%99[^,],%99[^,],%49[^,],%d",
+           &books[count].id,
+           books[count].title,
+           books[count].author,
+           books[count].subject,
+           &books[count].year);
 
-        count++;
-    }
+    count++;
+}
 
     fclose(file);
 
@@ -57,20 +57,103 @@ void displayDocuments(Document books[], int n)
                books[i].year);
     }
 }
-int main() {
+int linearSearch(Document books[], int n, int searchId)
+{
+    for (int i = 0; i < n; i++)
+    {
+        if (books[i].id == searchId)
+        {
+            return i;
+        }
+    }
 
+    return -1;
+}
+int main()
+{
     Document books[1000];
     int count;
-    
-
-    printf("========================================\n");
-    printf("   DIGITAL LIBRARY SEARCH ENGINE\n");
-    printf("========================================\n");
+    int choice;
 
     count = loadDocuments("documents.csv", books, 1000);
-    printf("\n%d documents loaded successfully.\n", count);
 
-    displayDocuments(books, count);
+    if (count == 0)
+    {
+        printf("No documents loaded.\n");
+        return 1;
+    }
+
+    do
+    {
+        printf("\n========================================\n");
+        printf("     DIGITAL LIBRARY SEARCH ENGINE\n");
+        printf("========================================\n");
+
+        printf("1. Display All Documents\n");
+        printf("2. Search Document by ID\n");
+        printf("3. Sort Documents\n");
+        printf("4. Search Text\n");
+        printf("5. Algorithm Demonstrations\n");
+        printf("0. Exit\n");
+
+        printf("\nEnter your choice: ");
+        scanf("%d", &choice);
+
+        switch (choice)
+        {
+            case 1:
+                displayDocuments(books, count);
+                break;
+
+            case 2:
+            {
+                int searchId;
+                int index;
+
+                printf("\nEnter Document ID to search: ");
+                scanf("%d", &searchId);
+
+                index = linearSearch(books, count, searchId);
+
+                if (index != -1)
+                {
+                   printf("\nDocument Found!\n");
+                   printf("-----------------------------\n");
+                   printf("ID      : %d\n", books[index].id);
+                   printf("Title   : %s\n", books[index].title);
+                   printf("Author  : %s\n", books[index].author);
+                   printf("Subject : %s\n", books[index].subject);
+                   printf("Year    : %d\n", books[index].year);
+                }
+                else
+                {  
+                   printf("\nDocument not found.\n");
+                }
+
+                 break;
+                }
+
+            case 3:
+                printf("\nSorting will be added later.\n");
+                break;
+
+            case 4:
+                printf("\nText searching will be added later.\n");
+                break;
+
+            case 5:
+                printf("\nAlgorithm demonstrations will be added later.\n");
+                break;
+
+            case 0:
+                printf("\nThank you for using Digital Library.\n");
+                break;
+
+            default:
+                printf("\nInvalid choice. Please try again.\n");
+        }
+
+    } while (choice != 0);
 
     return 0;
 }
