@@ -69,6 +69,72 @@ int linearSearch(Document books[], int n, int searchId)
 
     return -1;
 }
+void merge(Document books[], int left, int mid, int right)
+{
+    int i, j, k;
+
+    int n1 = mid - left + 1;
+    int n2 = right - mid;
+
+    Document leftArray[n1];
+    Document rightArray[n2];
+
+    for (i = 0; i < n1; i++)
+    {
+        leftArray[i] = books[left + i];
+    }
+
+    for (j = 0; j < n2; j++)
+    {
+        rightArray[j] = books[mid + 1 + j];
+    }
+
+    i = 0;
+    j = 0;
+    k = left;
+
+    while (i < n1 && j < n2)
+    {
+        if (leftArray[i].id <= rightArray[j].id)
+        {
+            books[k] = leftArray[i];
+            i++;
+        }
+        else
+        {
+            books[k] = rightArray[j];
+            j++;
+        }
+
+        k++;
+    }
+
+    while (i < n1)
+    {
+        books[k] = leftArray[i];
+        i++;
+        k++;
+    }
+
+    while (j < n2)
+    {
+        books[k] = rightArray[j];
+        j++;
+        k++;
+    }
+}
+void mergeSort(Document books[], int left, int right)
+{
+    if (left < right)
+    {
+        int mid = left + (right - left) / 2;
+
+        mergeSort(books, left, mid);
+        mergeSort(books, mid + 1, right);
+
+        merge(books, left, mid, right);
+    }
+}
 int main()
 {
     Document books[1000];
@@ -134,7 +200,12 @@ int main()
                 }
 
             case 3:
-                printf("\nSorting will be added later.\n");
+                mergeSort(books, 0, count - 1);
+
+                printf("\nDocuments sorted successfully using Merge Sort.\n");
+
+                displayDocuments(books, count);
+
                 break;
 
             case 4:
