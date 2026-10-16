@@ -1,11 +1,11 @@
-id,title,author,subject,year
-105,Artificial Intelligence,Russell,AI,2022
-102,Operating System Concepts,Silberschatz,Operating Systems,2021
-109,Database Management Systems,Ramakrishnan,Database,2020
-101,Introduction to Algorithms,Cormen,Algorithms,2022
-107,Machine Learning,Mitchell,Artificial Intelligence,2019
-104,Database System Concepts,Korth,Database,2021
-110,Design and Analysis of Algorithms,Levitin,Algorithms,2021
-103,Computer Networks,Tanenbaum,Networks,2020
-108,Computer Organization,Hamacher,Computer Architecture,2018
-106,Data Structures Using C,Thareja,Programming,2020
+id,title,author,subject,year,readingTime,score
+105,Artificial Intelligence,Russell,AI,2022,4,8
+102,Operating System Concepts,Silberschatz,Operating Systems,2021,5,9
+109,Database Management Systems,Ramakrishnan,Database,2020,3,7
+101,Introduction to Algorithms,Cormen,Algorithms,2022,5,10
+107,Machine Learning,Mitchell,Artificial Intelligence,2019,4,9
+104,Database System Concepts,Korth,Database,2021,3,8
+110,Design and Analysis of Algorithms,Levitin,Algorithms,2021,3,8
+103,Computer Networks,Tanenbaum,Networks,2020,4,7
+108,Computer Organization,Hamacher,Computer Architecture,2018,3,6
+106,Data Structures Using C,Thareja,Programming,2020,2,7

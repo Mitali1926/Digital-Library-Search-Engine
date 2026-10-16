@@ -6,6 +6,8 @@ typedef struct
     char author[100];
     char subject[50];
     int year;
+    int readingTime;
+    int score;
 } Document;
 int loadDocuments(const char *filename, Document books[], int maxBooks)
 {
@@ -26,12 +28,14 @@ int loadDocuments(const char *filename, Document books[], int maxBooks)
 
     while (fgets(line, sizeof(line), file) != NULL && count < maxBooks)
 {
-    sscanf(line, "%d,%99[^,],%99[^,],%49[^,],%d",
-           &books[count].id,
-           books[count].title,
-           books[count].author,
-           books[count].subject,
-           &books[count].year);
+    sscanf(line, "%d,%99[^,],%99[^,],%49[^,],%d,%d,%d",
+       &books[count].id,
+       books[count].title,
+       books[count].author,
+       books[count].subject,
+       &books[count].year,
+       &books[count].readingTime,
+       &books[count].score);
 
     count++;
 }
@@ -455,6 +459,84 @@ void searchByTitleKMP(Document books[], int n, char pattern[])
         printf("\nNo matching documents found.\n");
     }
 }
+void recommendBySubject(Document books[], int n, char subject[])
+{
+    int found = 0;
+
+    printf("\n------ RECOMMENDED DOCUMENTS ------\n");
+
+    for (int i = 0; i < n; i++)
+    {
+        if (naivePatternMatch(books[i].subject, subject))
+        {
+            printf("\nID      : %d\n", books[i].id);
+            printf("Title   : %s\n", books[i].title);
+            printf("Author  : %s\n", books[i].author);
+            printf("Subject : %s\n", books[i].subject);
+            printf("Year    : %d\n", books[i].year);
+
+            found = 1;
+        }
+    }
+
+    if (found == 0)
+    {
+        printf("\nNo recommendations found for this subject.\n");
+    }
+}
+void knapsackRecommendation(Document books[], int n, int maxTime)
+{
+    int dp[n + 1][maxTime + 1];
+
+    for (int i = 0; i <= n; i++)
+    {
+        for (int w = 0; w <= maxTime; w++)
+        {
+            if (i == 0 || w == 0)
+            {
+                dp[i][w] = 0;
+            }
+            else if (books[i - 1].readingTime <= w)
+            {
+                int include =
+                    books[i - 1].score +
+                    dp[i - 1][w - books[i - 1].readingTime];
+
+                int exclude = dp[i - 1][w];
+
+                if (include > exclude)
+                    dp[i][w] = include;
+                else
+                    dp[i][w] = exclude;
+            }
+            else
+            {
+                dp[i][w] = dp[i - 1][w];
+            }
+        }
+    }
+
+    printf("\n------ OPTIMAL RECOMMENDATION ------\n");
+    printf("Available Reading Time: %d hours\n", maxTime);
+    printf("Maximum Recommendation Score: %d\n", dp[n][maxTime]);
+
+    printf("\nSelected Documents:\n");
+
+    int remainingTime = maxTime;
+
+    for (int i = n; i > 0 && remainingTime > 0; i--)
+    {
+        if (dp[i][remainingTime] != dp[i - 1][remainingTime])
+        {
+            printf("\nID    : %d\n", books[i - 1].id);
+            printf("Title : %s\n", books[i - 1].title);
+            printf("Time  : %d hours\n", books[i - 1].readingTime);
+            printf("Score : %d\n", books[i - 1].score);
+
+            remainingTime -= books[i - 1].readingTime;
+        }
+    }
+}
 int main()
 {
     Document books[1000];
@@ -479,7 +561,8 @@ int main()
         printf("2. Search Document by ID\n");
         printf("3. Sort Documents\n");
         printf("4. Search Text\n");
-        printf("5. Algorithm Demonstrations\n");
+        printf("5. Recommend Documents\n");
+        printf("6. Algorithm Demonstrations\n");
         printf("0. Exit\n");
 
         printf("\nEnter your choice: ");
@@ -635,9 +718,60 @@ int main()
                 }
 
             case 5:
+                {
+                  int recommendationChoice;
+
+                  printf("\n------ RECOMMEND DOCUMENTS ------\n");
+                  printf("1. Recommend by Subject\n");
+                  printf("2. Recommend within Reading Time (0/1 Knapsack)\n");
+                  printf("0. Back\n");
+
+                  printf("\nEnter choice: ");
+                  scanf("%d", &recommendationChoice);
+
+                  if (recommendationChoice == 1)
+                  {
+                    char subject[50];
+
+                    printf("Enter preferred subject: ");
+                    scanf(" %49[^\n]", subject);
+
+                    recommendBySubject(books, count, subject);
+                  }
+                 else if (recommendationChoice == 2)
+                  {
+                    int availableTime;
+
+                    printf("Enter available reading time in hours: ");
+                    scanf("%d", &availableTime);
+
+                 if (availableTime <= 0)
+                  {
+                    printf("\nReading time must be greater than 0.\n");
+                  } 
+                 else
+                  {
+                    knapsackRecommendation(
+                    books,
+                    count,
+                    availableTime
+                    );
+                  }
+                }
+                else if (recommendationChoice == 0)
+                {
+                    printf("\nReturning to main menu.\n");
+                }
+                else
+                {
+                    printf("\nInvalid choice.\n");
+                }
+
+                   break;
+                }
+            case 6:
                 printf("\nAlgorithm demonstrations will be added later.\n");
                 break;
-
             case 0:
                 printf("\nThank you for using Digital Library.\n");
                 break;
