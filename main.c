@@ -264,6 +264,197 @@ void searchByTitle(Document books[], int n, char pattern[])
         printf("\nNo matching documents found.\n");
     }
 }
+int rabinKarp(char text[], char pattern[])
+{
+    int d = 256;
+    int q = 101;
+
+    int m = 0;
+    int n = 0;
+
+    int patternHash = 0;
+    int textHash = 0;
+    int h = 1;
+
+    int i, j;
+
+    while (pattern[m] != '\0')
+        m++;
+
+    while (text[n] != '\0')
+        n++;
+
+    if (m > n)
+        return 0;
+
+    for (i = 0; i < m - 1; i++)
+        h = (h * d) % q;
+
+    for (i = 0; i < m; i++)
+    {
+        patternHash = (d * patternHash + pattern[i]) % q;
+        textHash = (d * textHash + text[i]) % q;
+    }
+
+    for (i = 0; i <= n - m; i++)
+    {
+        if (patternHash == textHash)
+        {
+            for (j = 0; j < m; j++)
+            {
+                if (text[i + j] != pattern[j])
+                    break;
+            }
+
+            if (j == m)
+                return 1;
+        }
+
+        if (i < n - m)
+        {
+            textHash =
+                (d * (textHash - text[i] * h)
+                + text[i + m]) % q;
+
+            if (textHash < 0)
+                textHash += q;
+        }
+    }
+
+    return 0;
+}
+void searchByTitleRabinKarp(Document books[], int n, char pattern[])
+{
+    int found = 0;
+
+    printf("\nSearch Results (Rabin-Karp):\n");
+    printf("--------------------------------\n");
+
+    for (int i = 0; i < n; i++)
+    {
+        if (rabinKarp(books[i].title, pattern))
+        {
+            printf("\nID      : %d\n", books[i].id);
+            printf("Title   : %s\n", books[i].title);
+            printf("Author  : %s\n", books[i].author);
+            printf("Subject : %s\n", books[i].subject);
+            printf("Year    : %d\n", books[i].year);
+
+            found = 1;
+        }
+    }
+
+    if (found == 0)
+    {
+        printf("\nNo matching documents found.\n");
+    }
+}
+void computeLPS(char pattern[], int m, int lps[])
+{
+    int length = 0;
+    int i = 1;
+
+    lps[0] = 0;
+
+    while (i < m)
+    {
+        if (pattern[i] == pattern[length])
+        {
+            length++;
+            lps[i] = length;
+            i++;
+        }
+        else
+        {
+            if (length != 0)
+            {
+                length = lps[length - 1];
+            }
+            else
+            {
+                lps[i] = 0;
+                i++;
+            }
+        }
+    }
+}
+int kmpSearch(char text[], char pattern[])
+{
+    int n = 0;
+    int m = 0;
+
+    while (text[n] != '\0')
+        n++;
+
+    while (pattern[m] != '\0')
+        m++;
+
+    if (m == 0)
+        return 1;
+
+    if (m > n)
+        return 0;
+
+    int lps[m];
+
+    computeLPS(pattern, m, lps);
+
+    int i = 0;
+    int j = 0;
+
+    while (i < n)
+    {
+        if (text[i] == pattern[j])
+        {
+            i++;
+            j++;
+        }
+
+        if (j == m)
+        {
+            return 1;
+        }
+        else if (i < n && text[i] != pattern[j])
+        {
+            if (j != 0)
+            {
+                j = lps[j - 1];
+            }
+            else
+            {
+                i++;
+            }
+        }
+    }
+
+    return 0;
+}
+void searchByTitleKMP(Document books[], int n, char pattern[])
+{
+    int found = 0;
+
+    printf("\nSearch Results (KMP):\n");
+    printf("-----------------------------\n");
+
+    for (int i = 0; i < n; i++)
+    {
+        if (kmpSearch(books[i].title, pattern))
+        {
+            printf("\nID      : %d\n", books[i].id);
+            printf("Title   : %s\n", books[i].title);
+            printf("Author  : %s\n", books[i].author);
+            printf("Subject : %s\n", books[i].subject);
+            printf("Year    : %d\n", books[i].year);
+
+            found = 1;
+        }
+    }
+
+    if (found == 0)
+    {
+        printf("\nNo matching documents found.\n");
+    }
+}
 int main()
 {
     Document books[1000];
@@ -404,18 +595,44 @@ int main()
                  }
 
             case 4:
-            {
-                char pattern[100];
+                 {
+                   int textSearchChoice;
+                   char pattern[100];
 
-                printf("\n------ SEARCH BY TITLE ------\n");
+                   printf("1. Naive Pattern Matching\n");
+                   printf("2. Rabin-Karp\n");
+                   printf("3. KMP\n");
+                   printf("0. Back\n");
 
-                printf("Enter word or phrase: ");
-                scanf(" %99[^\n]", pattern);
+                   printf("\nEnter search method: ");
+                   scanf("%d", &textSearchChoice);
 
-                searchByTitle(books, count, pattern);
+                   if (textSearchChoice == 0)
+                   {
+                      break;
+                   }
 
-                break;
-            }
+                  printf("Enter word or phrase: ");
+                  scanf(" %99[^\n]", pattern);
+
+                  if (textSearchChoice == 1)
+                  {
+                     searchByTitle(books, count, pattern);
+                  }
+                  else if (textSearchChoice == 2)
+                  {
+                     searchByTitleRabinKarp(books, count, pattern);
+                  }
+                  else if (textSearchChoice == 3)
+                  {
+                     searchByTitleKMP(books, count, pattern);
+                  }
+                  else
+                  {
+                     printf("\nInvalid search method.\n");
+                   }
+                  break;
+                }
 
             case 5:
                 printf("\nAlgorithm demonstrations will be added later.\n");
