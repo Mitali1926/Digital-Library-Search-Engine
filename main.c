@@ -770,15 +770,39 @@ int main()
                    break;
                 }
             case 6:
-                printf("\nAlgorithm demonstrations will be added later.\n");
-                break;
-            case 0:
-                printf("\nThank you for using Digital Library.\n");
-                break;
+                {
+                    printf("\n========== ALGORITHM MODULES ==========\n");
+                    printf("1. Sorting Algorithms\n");
+                    printf("   - Merge Sort\n");
+                    printf("   - Quick Sort\n");
 
-            default:
-                printf("\nInvalid choice. Please try again.\n");
+                    printf("\n2. Searching Algorithms\n");
+                    printf("   - Linear Search\n");
+                    printf("   - Iterative Binary Search\n");
+                    printf("   - Recursive Binary Search\n");
+
+                    printf("\n3. Pattern Matching Algorithms\n");
+                    printf("   - Naive Pattern Matching\n");
+                    printf("   - Rabin-Karp\n");
+                    printf("   - KMP\n");
+
+                    printf("\n4. Dynamic Programming\n");
+                    printf("   - 0/1 Knapsack\n");
+
+                    printf("\nTotal Documents Loaded: %d\n", count);
+
+                    printf("\n=======================================\n");
+
+                    break;
+                } 
+            case 0:
+            printf("\nThank you for using Digital Library.\n");
+            break;
+
+        default:
+            printf("\nInvalid choice. Please try again.\n");
         }
+
 
     } while (choice != 0);
 
