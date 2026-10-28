@@ -428,7 +428,34 @@ void dijkstra(int graph[GRAPH_SIZE][GRAPH_SIZE], int source)
                distance[i]);
     }
 }
+void clearInputBuffer()
+{
+    int ch;
 
+    while ((ch = getchar()) != '\n' && ch != EOF)
+    {
+        /* discard invalid input */
+    }
+}
+int readInteger(char message[])
+{
+    int value;
+
+    while (1)
+    {
+        printf("%s", message);
+
+        if (scanf("%d", &value) == 1)
+        {
+            clearInputBuffer();
+            return value;
+        }
+
+        printf("Invalid input. Please enter a number.\n");
+
+        clearInputBuffer();
+    }
+}
 int main()
 {
     Document books[MAX_BOOKS];
@@ -463,8 +490,7 @@ int main()
         printf("6. About Algorithms\n");
         printf("0. Exit\n");
 
-        printf("\nEnter your choice: ");
-        scanf("%d", &choice);
+        choice = readInteger("\nEnter your choice: ");
 
         switch (choice)
         {
@@ -478,8 +504,7 @@ int main()
             {
                 int searchId;
 
-                printf("\nEnter Document ID: ");
-                scanf("%d", &searchId);
+                searchId = readInteger("\nEnter Document ID: ");
 
                 int index =
                     binarySearch(
@@ -542,8 +567,8 @@ int main()
                 printf("2. Recommend by Available Reading Time\n");
                 printf("0. Back\n");
 
-                printf("\nEnter choice: ");
-                scanf("%d", &recommendationChoice);
+                recommendationChoice =
+                    readInteger("\nEnter choice: ");
 
                 if (recommendationChoice == 1)
                 {
@@ -562,8 +587,8 @@ int main()
                 {
                     int availableTime;
 
-                    printf("Enter available reading time: ");
-                    scanf("%d", &availableTime);
+                    availableTime =
+                        readInteger("Enter available reading time: ");
 
                     if (availableTime > 0)
                     {
@@ -573,14 +598,16 @@ int main()
                             availableTime
                         );
                     }
-                    else
-                    {
-                        printf("\nInvalid reading time.\n");
-                    }
+                else if (recommendationChoice == 0)
+                {
+                    printf("\nReturning to main menu.\n");
                 }
-
+                else
+                {
+                    printf("\nInvalid recommendation choice.\n");
+                }
                 break;
-            }
+                }
 
             case 5:
             {
